@@ -1,61 +1,20 @@
-import yfinance as yf
-import requests
-import os
+name: Nifty Opening Predictor
+on:
+  schedule:
+    - cron: '35 3 * * *' # 05:35 AM Tete Time
+  workflow_dispatch:      # Allows manual testing
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4      
+      - uses: actions/setup-python@v5  
+        with:
+          python-version: '3.10'
+      - run: pip install yfinance requests
+      - env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python script.py
 
-TOKEN = os.getenv("TELEGRAM_TOKEN")
-CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-
-def send_msg(text):
-    # Added parse_mode=Markdown to ensure your bold/bullet points look professional
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={text}&parse_mode=Markdown"
-    requests.get(url)
-
-# 1. FETCH NIFTY DATA (2 days for accurate PDH/PDL)
-nifty = yf.Ticker("^NSEI").history(period="2d")
-pdh = nifty['High'].iloc[-2]
-pdl = nifty['Low'].iloc[-2]
-prev_close = nifty['Close'].iloc[-2]
-spot_now = nifty['Close'].iloc[-1]
-
-# 2. CALCULATE BENCHMARKS (Pivot Points)
-pivot = (pdh + pdl + prev_close) / 3
-r1 = (2 * pivot) - pdl
-s1 = (2 * pivot) - pdh
-
-# 3. FETCH GLOBAL DATA & VIX
-# Using ^INDIAVIX for better reliability on Yahoo Finance
-vix_data = yf.Ticker("^INDIAVIX").history(period="1d")
-vix = vix_data['Close'].iloc[-1] if not vix_data.empty else 0
-
-# GIFT Nifty (using Nifty 50 as proxy if futures are offline)
-gift_live = yf.Ticker("^NSEI").fast_info['last_price']
-usd_inr = yf.Ticker("INR=X").fast_info['last_price']
-
-# 4. LOGIC
-gap = gift_live - spot_now
-trend = "🚀 BULLISH" if gift_live > pivot else "📉 BEARISH"
-vix_warn = "⚠️ HIGH VOLATILITY" if vix > 20 else "✅ STABLE"
-
-# 5. THE MESSAGE
-msg = f"""
-📊 *BENCHMARKS: {trend}*
----
-💰 *GIFT Nifty Gap:* {gap:+.2f} pts
-📈 *Current Spot:* {spot_now:.2f}
-
-🧗 *REAL BARRIERS:*
-• *PDH (High):* {pdh:.2f}
-• *PDL (Low):* {pdl:.2f}
-
-📐 *THE PIVOT GRID:*
-• *R1 (Resistance):* {r1:.2f}
-• *Pivot Point:* {pivot:.2f}
-• *S1 (Support):* {s1:.2f}
-
-📉 *India VIX:* {vix:.2f} ({vix_warn})
-💵 *USD/INR:* {usd_inr:.2f}
----
-*Strategy:* If price stays below PDL ({pdl:.2f}), don't rush to buy!
-"""
-
-send_msg(msg)
+        
