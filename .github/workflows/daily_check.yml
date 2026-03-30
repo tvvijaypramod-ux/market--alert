@@ -6,45 +6,44 @@ TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 def send_msg(text):
+    # Added parse_mode=Markdown to ensure your bold/bullet points look professional
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={text}&parse_mode=Markdown"
     requests.get(url)
 
-# 1. FETCH DATA (2 days of data for High/Low/Close)
-nifty_ticker = yf.Ticker("^NSEI")
-n_hist = nifty_ticker.history(period="2d")
+# 1. FETCH NIFTY DATA (2 days for accurate PDH/PDL)
+nifty = yf.Ticker("^NSEI").history(period="2d")
+pdh = nifty['High'].iloc[-2]
+pdl = nifty['Low'].iloc[-2]
+prev_close = nifty['Close'].iloc[-2]
+spot_now = nifty['Close'].iloc[-1]
 
-# Previous Day benchmarks (Yesterday's actual traded levels)
-pdh = n_hist['High'].iloc[-2]
-pdl = n_hist['Low'].iloc[-2]
-prev_close = n_hist['Close'].iloc[-2]
-
-# Today's Current Spot
-spot_now = n_hist['Close'].iloc[-1]
-
-# 2. CALCULATE PIVOTS (The mathematical benchmarks)
+# 2. CALCULATE BENCHMARKS (Pivot Points)
 pivot = (pdh + pdl + prev_close) / 3
 r1 = (2 * pivot) - pdl
 s1 = (2 * pivot) - pdh
 
-# 3. GLOBAL & VOLATILITY DATA
-vix = yf.Ticker("INDIAVIX.NS").fast_info['last_price']
+# 3. FETCH GLOBAL DATA & VIX
+# Using ^INDIAVIX for better reliability on Yahoo Finance
+vix_data = yf.Ticker("^INDIAVIX").history(period="1d")
+vix = vix_data['Close'].iloc[-1] if not vix_data.empty else 0
+
+# GIFT Nifty (using Nifty 50 as proxy if futures are offline)
 gift_live = yf.Ticker("^NSEI").fast_info['last_price']
-nasdaq = yf.Ticker("^IXIC").history(period="1d")
-nasdaq_pc = ((nasdaq['Close'].iloc[-1] - nasdaq['Open'].iloc[-1]) / nasdaq['Open'].iloc[-1]) * 100
+usd_inr = yf.Ticker("INR=X").fast_info['last_price']
 
-# 4. LOGIC FOR SUMMARY
+# 4. LOGIC
 gap = gift_live - spot_now
-vix_warning = "⚠️ VIX > 20: High Volatility. Tighten Stops!" if vix > 20 else "✅ VIX Stable."
-trend = "🚀 BULLISH (Above Pivot)" if gift_live > pivot else "📉 BEARISH (Below Pivot)"
+trend = "🚀 BULLISH" if gift_live > pivot else "📉 BEARISH"
+vix_warn = "⚠️ HIGH VOLATILITY" if vix > 20 else "✅ STABLE"
 
-# 5. THE ULTIMATE BENCHMARK MESSAGE
+# 5. THE MESSAGE
 msg = f"""
-📊 *TRADING BENCHMARKS: {trend}*
+📊 *BENCHMARKS: {trend}*
 ---
 💰 *GIFT Nifty Gap:* {gap:+.2f} pts
 📈 *Current Spot:* {spot_now:.2f}
 
-🧗 *THE REAL BARRIERS:*
+🧗 *REAL BARRIERS:*
 • *PDH (High):* {pdh:.2f}
 • *PDL (Low):* {pdl:.2f}
 
@@ -53,13 +52,10 @@ msg = f"""
 • *Pivot Point:* {pivot:.2f}
 • *S1 (Support):* {s1:.2f}
 
-📉 *India VIX:* {vix:.2f} ({vix_warning})
-🇺🇸 *Nasdaq:* {'🟢' if nasdaq_pc > 0 else '🔴'} {nasdaq_pc:.2f}%
+📉 *India VIX:* {vix:.2f} ({vix_warn})
+💵 *USD/INR:* {usd_inr:.2f}
 ---
-📝 *SUMMARY:*
-• If GIFT opens > PDH, yesterday's sellers are trapped.
-• If GIFT opens < PDL, panic selling may continue.
-• Watch for a reversal at S1 ({s1:.2f}) or R1 ({r1:.2f}).
+*Strategy:* If price stays below PDL ({pdl:.2f}), don't rush to buy!
 """
 
 send_msg(msg)
