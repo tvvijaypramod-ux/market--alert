@@ -1,16 +1,16 @@
 name: Nifty Opening Predictor
 on:
   schedule:
-    - cron: '35 3 * * *'
-  workflow_dispatch:
+    - cron: '35 3 * * *' # Runs at 05:35 AM Tete (03:35 UTC)
+  workflow_dispatch:      # Allows manual testing
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v6      # Updated to v6
+      - uses: actions/setup-python@v6  # Updated to v6
         with:
-          python-version: '3.9'
+          python-version: '3.10'
       - run: pip install -r requirements.txt
       - env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
