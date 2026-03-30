@@ -9,15 +9,27 @@ def send_msg(text):
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={text}&parse_mode=Markdown"
     requests.get(url)
 
-# Fetch Data
+# 1. FETCH DATA
 nifty = yf.Ticker("^NSEI").history(period="2d")
-spot_close = nifty['Close'].iloc[-1]
-gift_live = yf.Ticker("^NSEI").fast_info['last_price'] 
-usd_inr = yf.Ticker("INR=X").fast_info['last_price']
+pdh, pdl, prev_close = nifty['High'].iloc[-2], nifty['Low'].iloc[-2], nifty['Close'].iloc[-2]
+spot_now = nifty['Close'].iloc[-1]
 
-expected_gap = gift_live - spot_close
-gap_type = "🟩 GAP UP" if expected_gap > 0 else "🟥 GAP DOWN"
+# 2. CALCULATE BENCHMARKS
+pivot = (pdh + pdl + prev_close) / 3
+r1, s1 = (2 * pivot) - pdl, (2 * pivot) - pdh
 
-msg = f"📈 *TETE 05:45 AM PRE-MARKET*\n---\n*Expected:* {gap_type}\n📍 *Nifty Spot:* {spot_close:.2f}\n📍 *GIFT Nifty:* {gift_live:.2f}\n📊 *Gap:* {expected_gap:+.2f} pts\n💵 *USD/INR:* {usd_inr:.2f}"
+# 3. INDICATORS
+vix = yf.Ticker("^INDIAVIX").history(period="1d")['Close'].iloc[-1]
+gift_live = yf.Ticker("^NSEI").fast_info['last_price']
+gap = gift_live - spot_now
+
+# 4. MESSAGE
+msg = f"""
+📊 *TRADING BENCHMARKS*
+---
+💰 *GIFT Nifty Gap:* {gap:+.2f}
+🧗 *PDH:* {pdh:.2f} | *PDL:* {pdl:.2f}
+📐 *R1:* {r1:.2f} | *S1:* {s1:.2f}
+📉 *India VIX:* {vix:.2f}
+"""
 send_msg(msg)
-
