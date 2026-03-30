@@ -1,19 +1,65 @@
-name: Nifty Opening Predictor
-on:
-  schedule:
-    - cron: '35 3 * * *' # Runs at 05:35 AM Tete (03:35 UTC)
-  workflow_dispatch:      # Allows manual testing
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6      # Updated to v6
-      - uses: actions/setup-python@v6  # Updated to v6
-        with:
-          python-version: '3.10'
-      - run: pip install -r requirements.txt
-      - env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python script.py
-        
+import yfinance as yf
+import requests
+import os
+
+TOKEN = os.getenv("TELEGRAM_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+
+def send_msg(text):
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={text}&parse_mode=Markdown"
+    requests.get(url)
+
+# 1. FETCH DATA (2 days of data for High/Low/Close)
+nifty_ticker = yf.Ticker("^NSEI")
+n_hist = nifty_ticker.history(period="2d")
+
+# Previous Day benchmarks (Yesterday's actual traded levels)
+pdh = n_hist['High'].iloc[-2]
+pdl = n_hist['Low'].iloc[-2]
+prev_close = n_hist['Close'].iloc[-2]
+
+# Today's Current Spot
+spot_now = n_hist['Close'].iloc[-1]
+
+# 2. CALCULATE PIVOTS (The mathematical benchmarks)
+pivot = (pdh + pdl + prev_close) / 3
+r1 = (2 * pivot) - pdl
+s1 = (2 * pivot) - pdh
+
+# 3. GLOBAL & VOLATILITY DATA
+vix = yf.Ticker("INDIAVIX.NS").fast_info['last_price']
+gift_live = yf.Ticker("^NSEI").fast_info['last_price']
+nasdaq = yf.Ticker("^IXIC").history(period="1d")
+nasdaq_pc = ((nasdaq['Close'].iloc[-1] - nasdaq['Open'].iloc[-1]) / nasdaq['Open'].iloc[-1]) * 100
+
+# 4. LOGIC FOR SUMMARY
+gap = gift_live - spot_now
+vix_warning = "⚠️ VIX > 20: High Volatility. Tighten Stops!" if vix > 20 else "✅ VIX Stable."
+trend = "🚀 BULLISH (Above Pivot)" if gift_live > pivot else "📉 BEARISH (Below Pivot)"
+
+# 5. THE ULTIMATE BENCHMARK MESSAGE
+msg = f"""
+📊 *TRADING BENCHMARKS: {trend}*
+---
+💰 *GIFT Nifty Gap:* {gap:+.2f} pts
+📈 *Current Spot:* {spot_now:.2f}
+
+🧗 *THE REAL BARRIERS:*
+• *PDH (High):* {pdh:.2f}
+• *PDL (Low):* {pdl:.2f}
+
+📐 *THE PIVOT GRID:*
+• *R1 (Resistance):* {r1:.2f}
+• *Pivot Point:* {pivot:.2f}
+• *S1 (Support):* {s1:.2f}
+
+📉 *India VIX:* {vix:.2f} ({vix_warning})
+🇺🇸 *Nasdaq:* {'🟢' if nasdaq_pc > 0 else '🔴'} {nasdaq_pc:.2f}%
+---
+📝 *SUMMARY:*
+• If GIFT opens > PDH, yesterday's sellers are trapped.
+• If GIFT opens < PDL, panic selling may continue.
+• Watch for a reversal at S1 ({s1:.2f}) or R1 ({r1:.2f}).
+"""
+
+send_msg(msg)
