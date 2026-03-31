@@ -1,3 +1,5 @@
+name: Option Chain Alert
+
 on:
   schedule:
     - cron: '0 4 * * 1-5'
@@ -19,7 +21,7 @@ jobs:
         with:
           python-version: '3.10'
       - name: Install dependencies
-        run: pip install yfinance requests
+        run: pip install yfinance requests pandas nselib
       - name: Run option chain alert
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
