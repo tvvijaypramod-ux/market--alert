@@ -1,7 +1,7 @@
 name: Nifty Opening Predictor
 on:
   schedule:
-    - cron: '35 3 * * *'
+    - cron: cron: '35 3 * * 1-5'
   workflow_dispatch:
 jobs:
   build:
