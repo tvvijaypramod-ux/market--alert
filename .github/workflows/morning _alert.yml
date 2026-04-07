@@ -2,27 +2,25 @@ name: Nifty Morning Alert
 
 on:
   schedule:
-    # 1:03 AM UTC = 3:03 AM Tete (offset to avoid server congestion)
-    - cron: '03 1 * * 1-5'
-  workflow_dispatch:
+    - cron: '03 1 * * 1-5'   # fallback, but you won't need it
+  repository_dispatch:
+    types: [morning-alert]    # <-- ADD THIS – external trigger
+  workflow_dispatch:          # manual trigger
 
 jobs:
   send-alert:
     runs-on: ubuntu-latest
-    timeout-minutes: 10          # <-- ADD THIS – kills job after 10 min
+    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v3
-
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-
     - name: Install dependencies
       run: pip install yfinance requests
-
     - name: Run morning alert
       env:
         TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}   # <-- FIXED typo (was missing '}')
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: python nifty_morning_alert.py
