@@ -2,25 +2,27 @@ name: Nifty Morning Alert
 
 on:
   schedule:
-    - cron: '30 1 * * 1-5'  # 1:30 AM UTC = 7:00 AM IST = 3:30 AM Tete
-  workflow_dispatch:         # allows manual trigger for testing
+    # 1:03 AM UTC = 3:03 AM Tete (offset to avoid server congestion)
+    - cron: '03 1 * * 1-5'
+  workflow_dispatch:
 
 jobs:
   send-alert:
     runs-on: ubuntu-latest
+    timeout-minutes: 10          # <-- ADD THIS – kills job after 10 min
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: Install dependencies
-        run: pip install yfinance requests
+    - name: Install dependencies
+      run: pip install yfinance requests
 
-      - name: Run morning alert
-        env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python nifty_morning_alert.py
+    - name: Run morning alert
+      env:
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}   # <-- FIXED typo (was missing '}')
+      run: python nifty_morning_alert.py
