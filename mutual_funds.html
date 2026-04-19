@@ -374,11 +374,21 @@ async function loadAllNAV() {
   renderAll();
 
   try {
-    // Use a CORS proxy to fetch AMFI data
-    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.amfiindia.com/spages/NAVAll.txt');
-    const res = await fetch(proxyUrl);
-    if (!res.ok) throw new Error('Fetch failed');
-    const text = await res.text();
+    // Try multiple CORS proxies in order
+    const AMFI_URL = 'https://www.amfiindia.com/spages/NAVAll.txt';
+    const proxies = [
+      'https://corsproxy.io/?' + encodeURIComponent(AMFI_URL),
+      'https://api.allorigins.win/raw?url=' + encodeURIComponent(AMFI_URL),
+      'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(AMFI_URL),
+    ];
+    let text = null;
+    for (const proxyUrl of proxies) {
+      try {
+        const res = await fetch(proxyUrl, {signal: AbortSignal.timeout(8000)});
+        if (res.ok) { text = await res.text(); break; }
+      } catch(e) { continue; }
+    }
+    if (!text) throw new Error('All proxies failed');
     const lines = text.split('\n');
     navMap = {};
     lines.forEach(line => {
