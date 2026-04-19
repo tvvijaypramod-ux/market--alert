@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India Mutual Fund NAV Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f1a;
+    --surface: #131929;
+    --card: #1a2235;
+    --border: #232f45;
+    --text: #e8edf5;
+    --muted: #7a8aaa;
+    --flexi: #38bdf8;
+    --mid: #fb923c;
+    --small: #4ade80;
+    --elss: #c084fc;
+    --flexi-bg: rgba(56,189,248,0.08);
+    --mid-bg: rgba(251,146,60,0.08);
+    --small-bg: rgba(74,222,128,0.08);
+    --elss-bg: rgba(192,132,252,0.08);
+    --up: #4ade80;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0b0f1a 0%, #131929 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 16px 16px;
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); }
+  .logo span { color: var(--flexi); }
+  .refresh-btn {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 14px; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .refresh-btn:hover { background: var(--border); }
+  .refresh-btn.loading { opacity: 0.6; pointer-events: none; }
+  #status {
+    font-size: 11px; color: var(--muted); margin-top: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--up); display: inline-block; }
+  .dot.loading { background: var(--flexi); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* TABS */
+  .tabs {
+    display: flex; gap: 6px; padding: 14px 16px 0;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border); white-space: nowrap;
+    background: var(--surface); color: var(--muted); transition: all 0.2s;
+  }
+  .tab.active-flexi  { background: var(--flexi-bg);  border-color: var(--flexi);  color: var(--flexi); }
+  .tab.active-mid    { background: var(--mid-bg);    border-color: var(--mid);    color: var(--mid); }
+  .tab.active-small  { background: var(--small-bg);  border-color: var(--small);  color: var(--small); }
+  .tab.active-elss   { background: var(--elss-bg);   border-color: var(--elss);   color: var(--elss); }
+
+  /* SECTIONS */
+  .sections { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px; padding: 14px 16px;
+    border-radius: 12px; border: 1px solid var(--border);
+  }
+  .section-header.flexi { background: var(--flexi-bg); border-color: rgba(56,189,248,0.2); }
+  .section-header.mid   { background: var(--mid-bg);   border-color: rgba(251,146,60,0.2); }
+  .section-header.small { background: var(--small-bg); border-color: rgba(74,222,128,0.2); }
+  .section-header.elss  { background: var(--elss-bg);  border-color: rgba(192,132,252,0.2); }
+
+  .cat-icon { font-size: 22px; }
+  .cat-title { font-family: 'DM Serif Display', serif; font-size: 18px; }
+  .cat-title.flexi { color: var(--flexi); }
+  .cat-title.mid   { color: var(--mid); }
+  .cat-title.small { color: var(--small); }
+  .cat-title.elss  { color: var(--elss); }
+  .cat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* FUND CARDS */
+  .fund-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+    margin-bottom: 8px; transition: border-color 0.2s;
+  }
+  .fund-card:hover { border-color: #3a4d6e; }
+  .fund-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .fund-rank {
+    font-size: 11px; font-weight: 600; color: var(--muted);
+    background: var(--surface); border-radius: 6px;
+    padding: 2px 7px; flex-shrink: 0; margin-top: 2px;
+  }
+  .fund-name { font-size: 14px; font-weight: 500; line-height: 1.4; flex: 1; }
+  .fund-nav-box { text-align: right; flex-shrink: 0; }
+  .nav-val {
+    font-family: 'DM Serif Display', serif; font-size: 18px;
+    color: var(--text); white-space: nowrap;
+  }
+  .nav-val.loading { color: var(--muted); font-size: 13px; font-family: 'DM Sans',sans-serif; }
+  .nav-date { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .fund-meta {
+    display: flex; gap: 10px; margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    font-size: 11px; padding: 3px 9px; border-radius: 20px;
+    background: var(--surface); color: var(--muted); border: 1px solid var(--border);
+  }
+  .meta-pill.ret { color: var(--up); border-color: rgba(74,222,128,0.2); background: rgba(74,222,128,0.06); }
+  .meta-pill.aum { color: #93c5fd; border-color: rgba(147,197,253,0.2); background: rgba(147,197,253,0.06); }
+
+  /* NOTE */
+  .note {
+    margin: 16px; padding: 12px 14px; border-radius: 10px;
+    background: rgba(251,146,60,0.07); border: 1px solid rgba(251,146,60,0.2);
+    font-size: 11px; color: #fbbf24; line-height: 1.6;
+  }
+
+  /* ERROR */
+  .error-box {
+    margin: 16px; padding: 14px; border-radius: 10px;
+    background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2);
+    color: #f87171; font-size: 13px; display: none;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div>
+      <div class="logo">MF<span>Nav</span> Tracker</div>
+    </div>
+    <button class="refresh-btn" onclick="loadAllNAV()">
+      ⟳ Refresh NAV
+    </button>
+  </div>
+  <div id="status"><span class="dot loading" id="dot"></span> <span id="statusText">Fetching live NAV from AMFI...</span></div>
+</header>
+
+<div class="tabs">
+  <div class="tab active-flexi" onclick="showTab('flexi',this)">🔵 Flexi Cap</div>
+  <div class="tab" onclick="showTab('mid',this)">🟡 Mid Cap</div>
+  <div class="tab" onclick="showTab('small',this)">🟢 Small Cap</div>
+  <div class="tab" onclick="showTab('elss',this)">🔴 Tax Saver</div>
+</div>
+
+<div class="error-box" id="errorBox">⚠️ Could not fetch NAV. AMFI may be temporarily unavailable. Try refreshing after some time.</div>
+
+<div class="sections">
+
+  <!-- FLEXI CAP -->
+  <div class="section active" id="sec-flexi">
+    <div class="section-header flexi">
+      <span class="cat-icon">🔵</span>
+      <div>
+        <div class="cat-title flexi">Flexi Cap Funds</div>
+        <div class="cat-sub">Invest across Large, Mid & Small Cap — Top 20 by Returns + AUM</div>
+      </div>
+    </div>
+    <div id="list-flexi"></div>
+  </div>
+
+  <!-- MID CAP -->
+  <div class="section" id="sec-mid">
+    <div class="section-header mid">
+      <span class="cat-icon">🟡</span>
+      <div>
+        <div class="cat-title mid">Mid Cap Funds</div>
+        <div class="cat-sub">101st–250th companies by market cap — Top 20 by Returns + AUM</div>
+      </div>
+    </div>
+    <div id="list-mid"></div>
+  </div>
+
+  <!-- SMALL CAP -->
+  <div class="section" id="sec-small">
+    <div class="section-header small">
+      <span class="cat-icon">🟢</span>
+      <div>
+        <div class="cat-title small">Small Cap Funds</div>
+        <div class="cat-sub">High growth potential — Top 20 by Returns + AUM</div>
+      </div>
+    </div>
+    <div id="list-small"></div>
+  </div>
+
+  <!-- ELSS -->
+  <div class="section" id="sec-elss">
+    <div class="section-header elss">
+      <span class="cat-icon">🔴</span>
+      <div>
+        <div class="cat-title elss">Tax Saver (ELSS)</div>
+        <div class="cat-sub">80C deduction up to ₹1.5L — 3yr lock-in — Top 20 by Returns + AUM</div>
+      </div>
+    </div>
+    <div id="list-elss"></div>
+  </div>
+
+</div>
+
+<div class="note">
+  ℹ️ NAV source: AMFI India (updates daily by 9 PM IST). 3Y CAGR & AUM data from Groww/Angel One (Mar 2026). Past performance is not a guarantee of future returns. Consult a SEBI-registered advisor before investing.
+</div>
+
+<script>
+const FUNDS = {
+  flexi: [
+    { name:"Parag Parikh Flexi Cap Fund",          code:"122639", ret3y:18.9,  aum:"₹84,000 Cr" },
+    { name:"HDFC Flexi Cap Fund",                  code:"100033", ret3y:21.5,  aum:"₹65,000 Cr" },
+    { name:"Quant Flexi Cap Fund",                 code:"148153", ret3y:26.1,  aum:"₹7,200 Cr"  },
+    { name:"JM Flexicap Fund",                     code:"119546", ret3y:24.8,  aum:"₹5,100 Cr"  },
+    { name:"Franklin India Flexi Cap Fund",        code:"100033", ret3y:20.3,  aum:"₹18,000 Cr" },
+    { name:"Motilal Oswal Flexi Cap Fund",         code:"135798", ret3y:19.7,  aum:"₹12,500 Cr" },
+    { name:"SBI Flexicap Fund",                    code:"125497", ret3y:17.4,  aum:"₹22,000 Cr" },
+    { name:"Kotak Flexicap Fund",                  code:"120255", ret3y:16.9,  aum:"₹48,000 Cr" },
+    { name:"Aditya Birla SL Flexi Cap Fund",       code:"100016", ret3y:16.3,  aum:"₹22,000 Cr" },
+    { name:"UTI Flexi Cap Fund",                   code:"120716", ret3y:15.8,  aum:"₹26,000 Cr" },
+    { name:"Canara Rob Flexi Cap Fund",            code:"119364", ret3y:15.2,  aum:"₹12,000 Cr" },
+    { name:"PGIM India Flexi Cap Fund",            code:"120503", ret3y:14.9,  aum:"₹5,800 Cr"  },
+    { name:"DSP Flexi Cap Fund",                   code:"119230", ret3y:14.6,  aum:"₹11,000 Cr" },
+    { name:"ICICI Pru Flexicap Fund",              code:"120600", ret3y:14.2,  aum:"₹14,000 Cr" },
+    { name:"Nippon India Flexi Cap Fund",          code:"118988", ret3y:13.8,  aum:"₹18,500 Cr" },
+    { name:"Mirae Asset Flexi Cap Fund",           code:"145551", ret3y:13.5,  aum:"₹3,200 Cr"  },
+    { name:"Tata Flexi Cap Fund",                  code:"145553", ret3y:13.1,  aum:"₹6,500 Cr"  },
+    { name:"Axis Flexi Cap Fund",                  code:"122639", ret3y:12.8,  aum:"₹12,000 Cr" },
+    { name:"Baroda BNP Paribas Flexi Cap Fund",   code:"119532", ret3y:12.4,  aum:"₹2,400 Cr"  },
+    { name:"Sundaram Flexi Cap Fund",              code:"100476", ret3y:12.0,  aum:"₹1,800 Cr"  },
+  ],
+  mid: [
+    { name:"Motilal Oswal Midcap Fund",            code:"135800", ret3y:31.2,  aum:"₹22,000 Cr" },
+    { name:"Quant Mid Cap Fund",                   code:"148151", ret3y:29.5,  aum:"₹8,500 Cr"  },
+    { name:"Nippon India Growth Fund",             code:"118954", ret3y:24.6,  aum:"₹34,000 Cr" },
+    { name:"HDFC Mid-Cap Opportunities Fund",      code:"100006", ret3y:23.8,  aum:"₹78,000 Cr" },
+    { name:"SBI Magnum Midcap Fund",               code:"100258", ret3y:22.1,  aum:"₹23,000 Cr" },
+    { name:"Kotak Emerging Equity Fund",           code:"120187", ret3y:21.5,  aum:"₹50,000 Cr" },
+    { name:"Edelweiss Mid Cap Fund",               code:"135300", ret3y:21.0,  aum:"₹7,200 Cr"  },
+    { name:"PGIM India Midcap Opp Fund",           code:"120504", ret3y:20.4,  aum:"₹11,000 Cr" },
+    { name:"Mirae Asset Midcap Fund",              code:"145556", ret3y:19.8,  aum:"₹15,000 Cr" },
+    { name:"Invesco India Mid Cap Fund",           code:"120588", ret3y:19.3,  aum:"₹5,800 Cr"  },
+    { name:"Axis Midcap Fund",                     code:"120568", ret3y:18.7,  aum:"₹28,000 Cr" },
+    { name:"DSP Midcap Fund",                      code:"100050", ret3y:18.2,  aum:"₹22,000 Cr" },
+    { name:"Franklin India Prima Fund",            code:"100042", ret3y:17.8,  aum:"₹12,000 Cr" },
+    { name:"ICICI Pru Midcap Fund",                code:"120592", ret3y:17.3,  aum:"₹6,500 Cr"  },
+    { name:"Tata Mid Cap Growth Fund",             code:"100341", ret3y:16.9,  aum:"₹4,200 Cr"  },
+    { name:"UTI Mid Cap Fund",                     code:"120718", ret3y:16.4,  aum:"₹12,000 Cr" },
+    { name:"Aditya Birla SL Midcap Fund",         code:"119508", ret3y:15.8,  aum:"₹7,500 Cr"  },
+    { name:"Canara Rob Mid Cap Fund",              code:"119365", ret3y:15.2,  aum:"₹9,800 Cr"  },
+    { name:"Sundaram Mid Cap Fund",                code:"100456", ret3y:14.7,  aum:"₹12,000 Cr" },
+    { name:"Baroda BNP Paribas Mid Cap Fund",     code:"119534", ret3y:14.1,  aum:"₹2,200 Cr"  },
+  ],
+  small: [
+    { name:"Quant Small Cap Fund",                 code:"120843", ret3y:35.2,  aum:"₹25,000 Cr" },
+    { name:"Nippon India Small Cap Fund",          code:"118778", ret3y:27.8,  aum:"₹62,000 Cr" },
+    { name:"HDFC Small Cap Fund",                  code:"100024", ret3y:23.0,  aum:"₹32,000 Cr" },
+    { name:"SBI Small Cap Fund",                   code:"125354", ret3y:22.5,  aum:"₹32,000 Cr" },
+    { name:"Axis Small Cap Fund",                  code:"120573", ret3y:22.1,  aum:"₹22,000 Cr" },
+    { name:"Invesco India Smallcap Fund",          code:"120590", ret3y:26.5,  aum:"₹5,500 Cr"  },
+    { name:"Kotak Small Cap Fund",                 code:"120200", ret3y:20.8,  aum:"₹16,000 Cr" },
+    { name:"DSP Small Cap Fund",                   code:"100051", ret3y:20.2,  aum:"₹16,000 Cr" },
+    { name:"Franklin India Smaller Cos Fund",     code:"100037", ret3y:19.7,  aum:"₹14,000 Cr" },
+    { name:"Tata Small Cap Fund",                  code:"145557", ret3y:19.2,  aum:"₹8,500 Cr"  },
+    { name:"ICICI Pru Smallcap Fund",              code:"120596", ret3y:18.6,  aum:"₹8,000 Cr"  },
+    { name:"Canara Rob Small Cap Fund",            code:"119366", ret3y:18.0,  aum:"₹12,000 Cr" },
+    { name:"Edelweiss Small Cap Fund",             code:"147622", ret3y:17.5,  aum:"₹3,500 Cr"  },
+    { name:"Union Small Cap Fund",                 code:"135798", ret3y:17.0,  aum:"₹1,800 Cr"  },
+    { name:"Aditya Birla SL Small Cap Fund",      code:"119518", ret3y:16.5,  aum:"₹5,200 Cr"  },
+    { name:"Mirae Asset Small Cap Fund",           code:"152439", ret3y:16.0,  aum:"₹4,500 Cr"  },
+    { name:"UTI Small Cap Fund",                   code:"120719", ret3y:15.4,  aum:"₹5,800 Cr"  },
+    { name:"Baroda BNP Paribas Small Cap Fund",   code:"119536", ret3y:14.9,  aum:"₹1,500 Cr"  },
+    { name:"Sundaram Small Cap Fund",              code:"100455", ret3y:14.4,  aum:"₹3,200 Cr"  },
+    { name:"PGIM India Small Cap Fund",            code:"120506", ret3y:13.8,  aum:"₹1,200 Cr"  },
+  ],
+  elss: [
+    { name:"Motilal Oswal ELSS Tax Saver Fund",   code:"150323", ret3y:25.8,  aum:"₹4,500 Cr"  },
+    { name:"Quant ELSS Tax Saver Fund",            code:"120843", ret3y:29.1,  aum:"₹9,500 Cr"  },
+    { name:"SBI Long Term Equity Fund",            code:"100102", ret3y:22.3,  aum:"₹26,000 Cr" },
+    { name:"HDFC ELSS Tax Saver Fund",             code:"100021", ret3y:19.4,  aum:"₹16,000 Cr" },
+    { name:"Mirae Asset ELSS Tax Saver Fund",      code:"118834", ret3y:18.9,  aum:"₹25,000 Cr" },
+    { name:"Canara Rob ELSS Tax Saver Fund",       code:"119361", ret3y:18.3,  aum:"₹8,500 Cr"  },
+    { name:"DSP ELSS Tax Saver Fund",              code:"119229", ret3y:17.8,  aum:"₹16,000 Cr" },
+    { name:"Kotak ELSS Tax Saver Fund",            code:"120192", ret3y:17.2,  aum:"₹6,500 Cr"  },
+    { name:"Franklin India ELSS Tax Saver Fund",  code:"100040", ret3y:16.7,  aum:"₹6,200 Cr"  },
+    { name:"ICICI Pru ELSS Tax Saver Fund",        code:"120598", ret3y:16.2,  aum:"₹14,000 Cr" },
+    { name:"Aditya Birla SL ELSS Tax Relief",     code:"119510", ret3y:15.8,  aum:"₹16,000 Cr" },
+    { name:"Nippon India ELSS Tax Saver Fund",     code:"118789", ret3y:15.3,  aum:"₹15,000 Cr" },
+    { name:"Tata India Tax Savings Fund",          code:"100346", ret3y:14.9,  aum:"₹4,500 Cr"  },
+    { name:"UTI Long Term Equity Fund",            code:"120715", ret3y:14.4,  aum:"₹3,500 Cr"  },
+    { name:"Invesco India ELSS Tax Saver Fund",   code:"120585", ret3y:14.0,  aum:"₹2,200 Cr"  },
+    { name:"Axis ELSS Tax Saver Fund",             code:"120566", ret3y:13.5,  aum:"₹36,000 Cr" },
+    { name:"PGIM India ELSS Tax Saver Fund",       code:"148465", ret3y:13.0,  aum:"₹700 Cr"    },
+    { name:"Bandhan ELSS Tax Saver Fund",          code:"119566", ret3y:12.6,  aum:"₹6,000 Cr"  },
+    { name:"Baroda BNP Paribas ELSS Fund",        code:"119530", ret3y:12.1,  aum:"₹1,800 Cr"  },
+    { name:"Sundaram ELSS Tax Saver Fund",         code:"100453", ret3y:11.7,  aum:"₹1,200 Cr"  },
+  ]
+};
+
+const COLORS = { flexi:'var(--flexi)', mid:'var(--mid)', small:'var(--small)', elss:'var(--elss)' };
+let navMap = {};
+let activeTab = 'flexi';
+
+function showTab(tab, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => { t.className = 'tab'; });
+  document.getElementById('sec-' + tab).classList.add('active');
+  el.classList.add('active-' + tab);
+  activeTab = tab;
+}
+
+function renderAll() {
+  ['flexi','mid','small','elss'].forEach(cat => {
+    const container = document.getElementById('list-' + cat);
+    container.innerHTML = '';
+    FUNDS[cat].forEach((f, i) => {
+      const info = navMap[f.code];
+      const navStr = info ? '₹' + parseFloat(info.nav).toFixed(2) : '...';
+      const dateStr = info ? info.date : '';
+      const isLoading = !info;
+      container.innerHTML += `
+        <div class="fund-card">
+          <div class="fund-top">
+            <span class="fund-rank">#${i+1}</span>
+            <span class="fund-name">${f.name}</span>
+            <div class="fund-nav-box">
+              <div class="nav-val ${isLoading?'loading':''}">${navStr}</div>
+              ${dateStr ? `<div class="nav-date">${dateStr}</div>` : ''}
+            </div>
+          </div>
+          <div class="fund-meta">
+            <span class="meta-pill ret">3Y: ${f.ret3y}% CAGR</span>
+            <span class="meta-pill aum">AUM: ${f.aum}</span>
+          </div>
+        </div>`;
+    });
+  });
+}
+
+async function loadAllNAV() {
+  const btn = document.querySelector('.refresh-btn');
+  const dot = document.getElementById('dot');
+  const statusText = document.getElementById('statusText');
+  const errorBox = document.getElementById('errorBox');
+
+  btn.classList.add('loading');
+  dot.classList.add('loading');
+  statusText.textContent = 'Fetching live NAV from AMFI...';
+  errorBox.style.display = 'none';
+
+  // Render loading state first
+  renderAll();
+
+  try {
+    // Use a CORS proxy to fetch AMFI data
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.amfiindia.com/spages/NAVAll.txt');
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error('Fetch failed');
+    const text = await res.text();
+    const lines = text.split('\n');
+    navMap = {};
+    lines.forEach(line => {
+      const parts = line.split(';');
+      if (parts.length >= 6) {
+        const code = parts[0].trim();
+        const nav  = parts[4].trim();
+        const date = parts[5].trim();
+        if (code && nav && !isNaN(parseFloat(nav))) {
+          navMap[code] = { nav, date };
+        }
+      }
+    });
+    renderAll();
+    const now = new Date();
+    statusText.textContent = `Live NAV loaded · ${now.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'})} IST`;
+    dot.classList.remove('loading');
+  } catch(e) {
+    statusText.textContent = 'Could not fetch live NAV. Showing static data.';
+    dot.style.background = '#f87171';
+    dot.classList.remove('loading');
+    errorBox.style.display = 'block';
+    renderAll(); // show with "..." nav
+  }
+  btn.classList.remove('loading');
+}
+
+// Auto-load on page open
+loadAllNAV();
+</script>
+</body>
+</html>
