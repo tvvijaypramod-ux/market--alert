@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MF Signal Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c14;
+  --surface: #0f1623;
+  --card: #141e2e;
+  --border: #1e2d45;
+  --text: #dde6f5;
+  --muted: #5a7090;
+  --buy: #00e5a0;
+  --sell: #ff4e6a;
+  --hold: #f59e0b;
+  --sip: #38bdf8;
+  --large: #a78bfa;
+  --flexi: #38bdf8;
+  --mid: #fb923c;
+  --small: #4ade80;
+  --elss: #f472b6;
+  --buy-bg: rgba(0,229,160,0.07);
+  --sell-bg: rgba(255,78,106,0.07);
+  --hold-bg: rgba(245,158,11,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;}
+
+/* HEADER */
+header{
+  background:linear-gradient(180deg,#0f1a2e 0%,#080c14 100%);
+  border-bottom:1px solid var(--border);
+  padding:16px;
+  position:sticky;top:0;z-index:100;
+}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.logo{font-family:'Syne',sans-serif;font-size:20px;letter-spacing:-0.5px;}
+.logo em{font-style:normal;color:var(--buy);}
+.refresh-btn{
+  background:var(--card);border:1px solid var(--border);
+  color:var(--text);padding:8px 12px;border-radius:8px;
+  font-family:'IBM Plex Sans',sans-serif;font-size:12px;cursor:pointer;
+  display:flex;align-items:center;gap:5px;transition:all 0.2s;
+}
+.refresh-btn:active{opacity:0.7;}
+.refresh-btn.spin span{display:inline-block;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#statusBar{
+  margin-top:8px;font-size:11px;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--buy);display:inline-block;}
+.pulse.active{animation:blink 1.2s ease infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+
+/* LEGEND */
+.legend{
+  display:flex;gap:10px;padding:10px 16px;
+  overflow-x:auto;scrollbar-width:none;
+  background:var(--surface);border-bottom:1px solid var(--border);
+}
+.legend::-webkit-scrollbar{display:none;}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;white-space:nowrap;color:var(--muted);}
+.leg-dot{width:8px;height:8px;border-radius:50%;}
+
+/* TABS */
+.tabs{
+  display:flex;gap:6px;padding:12px 16px;
+  overflow-x:auto;scrollbar-width:none;background:var(--bg);
+  border-bottom:1px solid var(--border);
+}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{
+  padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;
+  cursor:pointer;border:1px solid var(--border);white-space:nowrap;
+  background:var(--surface);color:var(--muted);transition:all 0.2s;flex-shrink:0;
+}
+.tab.active{border-color:currentColor;}
+.tab.t-large{color:var(--large);}
+.tab.t-flexi{color:var(--flexi);}
+.tab.t-mid{color:var(--mid);}
+.tab.t-small{color:var(--small);}
+.tab.t-elss{color:var(--elss);}
+
+/* SUMMARY BAR */
+.summary{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+  padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);
+}
+.sum-box{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:10px;text-align:center;
+}
+.sum-val{font-family:'Syne',sans-serif;font-size:22px;}
+.sum-val.buy{color:var(--buy);}
+.sum-val.sell{color:var(--sell);}
+.sum-val.hold{color:var(--hold);}
+.sum-lbl{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* SECTIONS */
+.sections{padding:12px 16px;}
+.section{display:none;}
+.section.active{display:block;}
+
+/* FUND SIGNAL CARD */
+.sig-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;margin-bottom:10px;overflow:hidden;
+  transition:border-color 0.2s;
+}
+.sig-card.buy-card{border-left:3px solid var(--buy);}
+.sig-card.sell-card{border-left:3px solid var(--sell);}
+.sig-card.hold-card{border-left:3px solid var(--hold);}
+
+.sig-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px 8px;gap:8px;
+}
+.sig-rank{
+  font-size:10px;font-weight:600;color:var(--muted);
+  background:var(--surface);border-radius:5px;padding:2px 6px;flex-shrink:0;
+}
+.sig-name{font-size:13px;font-weight:500;line-height:1.4;flex:1;}
+.signal-badge{
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  padding:4px 10px;border-radius:20px;flex-shrink:0;letter-spacing:0.5px;
+}
+.signal-badge.BUY{background:var(--buy-bg);color:var(--buy);border:1px solid rgba(0,229,160,0.3);}
+.signal-badge.SELL{background:var(--sell-bg);color:var(--sell);border:1px solid rgba(255,78,106,0.3);}
+.signal-badge.HOLD{background:var(--hold-bg);color:var(--hold);border:1px solid rgba(245,158,11,0.3);}
+
+.sig-nav-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px 10px;
+}
+.nav-display{font-family:'Syne',sans-serif;font-size:20px;color:var(--text);}
+.nav-sub{font-size:10px;color:var(--muted);}
+
+/* PROGRESS BAR (52W range) */
+.range-section{padding:4px 14px 12px;}
+.range-label{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:5px;}
+.range-bar{height:6px;background:var(--surface);border-radius:3px;position:relative;overflow:visible;}
+.range-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--sell),var(--hold),var(--buy));}
+.range-pointer{
+  position:absolute;top:-4px;width:14px;height:14px;
+  border-radius:50%;background:var(--text);border:2px solid var(--bg);
+  transform:translateX(-50%);transition:left 0.5s ease;
+}
+
+/* SIP SIGNAL */
+.sip-row{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px 12px;border-top:1px solid var(--border);
+  background:rgba(56,189,248,0.04);
+}
+.sip-icon{font-size:14px;}
+.sip-text{font-size:11px;color:var(--sip);flex:1;line-height:1.4;}
+.sip-action{
+  font-size:10px;font-weight:600;padding:3px 9px;border-radius:10px;
+  border:1px solid rgba(56,189,248,0.3);color:var(--sip);background:rgba(56,189,248,0.08);
+  white-space:nowrap;
+}
+
+/* DISCLAIMER */
+.disclaimer{
+  margin:16px;padding:12px;border-radius:10px;
+  background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);
+  font-size:11px;color:#a07840;line-height:1.7;
+}
+
+/* LOADING SHIMMER */
+.shimmer{
+  background:linear-gradient(90deg,var(--card) 25%,var(--border) 50%,var(--card) 75%);
+  background-size:200% 100%;animation:shimmer 1.5s infinite;
+  border-radius:8px;height:90px;margin-bottom:10px;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.error-note{
+  padding:14px;background:rgba(255,78,106,0.08);border:1px solid rgba(255,78,106,0.2);
+  border-radius:10px;color:#ff4e6a;font-size:12px;margin-bottom:12px;display:none;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hrow">
+    <div class="logo">MF <em>Signal</em> Tracker</div>
+    <button class="refresh-btn" id="refreshBtn" onclick="loadAndRender()">
+      <span>⟳</span> Refresh
+    </button>
+  </div>
+  <div id="statusBar"><span class="pulse active" id="pulse"></span><span id="statusTxt">Loading NAV data...</span></div>
+</header>
+
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:var(--buy)"></div> BUY — NAV near 52W low, good dip</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--sell)"></div> SELL / WAIT — NAV near 52W high</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--hold)"></div> HOLD — NAV in mid-range</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--sip)"></div> SIP timing signal</div>
+</div>
+
+<div class="tabs">
+  <div class="tab t-large active" onclick="showTab('large',this)">🟣 Large Cap</div>
+  <div class="tab t-flexi" onclick="showTab('flexi',this)">🔵 Flexi Cap</div>
+  <div class="tab t-mid" onclick="showTab('mid',this)">🟡 Mid Cap</div>
+  <div class="tab t-small" onclick="showTab('small',this)">🟢 Small Cap</div>
+  <div class="tab t-elss" onclick="showTab('elss',this)">🩷 Tax Saver</div>
+</div>
+
+<div class="summary">
+  <div class="sum-box"><div class="sum-val buy" id="buyCount">-</div><div class="sum-lbl">🟢 BUY</div></div>
+  <div class="sum-box"><div class="sum-val hold" id="holdCount">-</div><div class="sum-lbl">🟡 HOLD</div></div>
+  <div class="sum-box"><div class="sum-val sell" id="sellCount">-</div><div class="sum-lbl">🔴 SELL/WAIT</div></div>
+</div>
+
+<div class="sections">
+  <div class="error-note" id="errorNote">⚠️ Live NAV fetch failed. Signals based on estimated NAV. Refresh to retry.</div>
+
+  <div class="section active" id="sec-large"><div id="list-large"></div></div>
+  <div class="section" id="sec-flexi"><div id="list-flexi"></div></div>
+  <div class="section" id="sec-mid"><div id="list-mid"></div></div>
+  <div class="section" id="sec-small"><div id="list-small"></div></div>
+  <div class="section" id="sec-elss"><div id="list-elss"></div></div>
+</div>
+
+<div class="disclaimer">
+  ⚠️ <strong>Disclaimer:</strong> Signals are based on NAV position within estimated 52-week range and are for <strong>educational reference only</strong>. This is NOT financial advice. Mutual fund investments are subject to market risks. Please consult a SEBI-registered advisor before investing. Past performance does not guarantee future returns.
+</div>
+
+<script>
+// ─── FUND DATA ───────────────────────────────────────────────
+// code: AMFI scheme code | nav52low/high: estimated 52-week range
+const FUNDS = {
+  large:[
+    {name:"Nippon India Large Cap Fund",       code:"118989", low:72,  high:105, aum:"₹50,876 Cr"},
+    {name:"WhiteOak Capital Large Cap Fund",   code:"152441", low:20,  high:32,  aum:"₹1,143 Cr"},
+    {name:"Invesco India Largecap Fund",       code:"120594", low:55,  high:80,  aum:"₹1,718 Cr"},
+    {name:"Bandhan Large Cap Fund",            code:"119568", low:27,  high:42,  aum:"₹2,051 Cr"},
+    {name:"ICICI Prudential Bluechip Fund",    code:"120586", low:80,  high:115, aum:"₹78,502 Cr"},
+    {name:"DSP Large Cap Fund",                code:"119255", low:60,  high:88,  aum:"₹7,285 Cr"},
+    {name:"Quant Large Cap Fund",              code:"145552", low:30,  high:50,  aum:"₹3,005 Cr"},
+    {name:"Bank of India Large Cap Fund",      code:"135300", low:18,  high:28,  aum:"₹210 Cr"},
+    {name:"Baroda BNP Paribas Large Cap Fund", code:"119533", low:23,  high:36,  aum:"₹2,702 Cr"},
+    {name:"Taurus Large Cap Fund",             code:"100350", low:130, high:180, aum:"₹52 Cr"},
+  ],
+  flexi:[
+    {name:"Parag Parikh Flexi Cap Fund",       code:"122639", low:52,  high:75,  aum:"₹84,000 Cr"},
+    {name:"HDFC Flexi Cap Fund",               code:"100033", low:1300,high:1900,aum:"₹65,000 Cr"},
+    {name:"Quant Flexi Cap Fund",              code:"148153", low:60,  high:90,  aum:"₹7,200 Cr"},
+    {name:"JM Flexicap Fund",                  code:"119546", low:80,  high:120, aum:"₹5,100 Cr"},
+    {name:"Motilal Oswal Flexi Cap Fund",      code:"135798", low:40,  high:62,  aum:"₹12,500 Cr"},
+    {name:"SBI Flexicap Fund",                 code:"125497", low:75,  high:108, aum:"₹22,000 Cr"},
+    {name:"Kotak Flexicap Fund",               code:"120255", low:55,  high:80,  aum:"₹48,000 Cr"},
+    {name:"Aditya Birla SL Flexi Cap Fund",    code:"100016", low:1200,high:1700,aum:"₹22,000 Cr"},
+    {name:"UTI Flexi Cap Fund",                code:"120716", low:220, high:320, aum:"₹26,000 Cr"},
+    {name:"Canara Rob Flexi Cap Fund",         code:"119364", low:95,  high:140, aum:"₹12,000 Cr"},
+    {name:"PGIM India Flexi Cap Fund",         code:"120503", low:28,  high:42,  aum:"₹5,800 Cr"},
+    {name:"DSP Flexi Cap Fund",                code:"119230", low:44,  high:65,  aum:"₹11,000 Cr"},
+    {name:"ICICI Pru Flexicap Fund",           code:"120600", low:18,  high:28,  aum:"₹14,000 Cr"},
+    {name:"Nippon India Flexi Cap Fund",       code:"118988", low:1400,high:2000,aum:"₹18,500 Cr"},
+    {name:"Mirae Asset Flexi Cap Fund",        code:"145551", low:22,  high:33,  aum:"₹3,200 Cr"},
+    {name:"Tata Flexi Cap Fund",               code:"145553", low:22,  high:33,  aum:"₹6,500 Cr"},
+    {name:"Axis Flexi Cap Fund",               code:"120568", low:18,  high:27,  aum:"₹12,000 Cr"},
+    {name:"Baroda BNP Flexi Cap Fund",         code:"119532", low:16,  high:25,  aum:"₹2,400 Cr"},
+    {name:"Sundaram Flexi Cap Fund",           code:"100476", low:180, high:260, aum:"₹1,800 Cr"},
+    {name:"Franklin India Flexi Cap Fund",     code:"100040", low:1100,high:1600,aum:"₹18,000 Cr"},
+  ],
+  mid:[
+    {name:"Motilal Oswal Midcap Fund",         code:"135800", low:60,  high:95,  aum:"₹22,000 Cr"},
+    {name:"Quant Mid Cap Fund",                code:"148151", low:130, high:200, aum:"₹8,500 Cr"},
+    {name:"Nippon India Growth Fund",          code:"118954", low:2700,high:4000,aum:"₹34,000 Cr"},
+    {name:"HDFC Mid-Cap Opportunities Fund",   code:"100006", low:110, high:165, aum:"₹78,000 Cr"},
+    {name:"SBI Magnum Midcap Fund",            code:"100258", low:170, high:260, aum:"₹23,000 Cr"},
+    {name:"Kotak Emerging Equity Fund",        code:"120187", low:85,  high:130, aum:"₹50,000 Cr"},
+    {name:"Edelweiss Mid Cap Fund",            code:"135300", low:60,  high:92,  aum:"₹7,200 Cr"},
+    {name:"PGIM India Midcap Opp Fund",        code:"120504", low:40,  high:62,  aum:"₹11,000 Cr"},
+    {name:"Mirae Asset Midcap Fund",           code:"145556", low:22,  high:33,  aum:"₹15,000 Cr"},
+    {name:"Invesco India Mid Cap Fund",        code:"120588", low:90,  high:135, aum:"₹5,800 Cr"},
+    {name:"Axis Midcap Fund",                  code:"120573", low:68,  high:102, aum:"₹28,000 Cr"},
+    {name:"DSP Midcap Fund",                   code:"100050", low:90,  high:135, aum:"₹22,000 Cr"},
+    {name:"Franklin India Prima Fund",         code:"100042", low:1400,high:2100,aum:"₹12,000 Cr"},
+    {name:"ICICI Pru Midcap Fund",             code:"120592", low:180, high:270, aum:"₹6,500 Cr"},
+    {name:"Tata Mid Cap Growth Fund",          code:"100341", low:280, high:420, aum:"₹4,200 Cr"},
+    {name:"UTI Mid Cap Fund",                  code:"120718", low:180, high:270, aum:"₹12,000 Cr"},
+    {name:"Aditya Birla SL Midcap Fund",       code:"119508", low:550, high:820, aum:"₹7,500 Cr"},
+    {name:"Canara Rob Mid Cap Fund",           code:"119365", low:180, high:270, aum:"₹9,800 Cr"},
+    {name:"Sundaram Mid Cap Fund",             code:"100456", low:700, high:1050,aum:"₹12,000 Cr"},
+    {name:"Baroda BNP Paribas Mid Cap Fund",   code:"119534", low:26,  high:39,  aum:"₹2,200 Cr"},
+  ],
+  small:[
+    {name:"Quant Small Cap Fund",              code:"120843", low:170, high:260, aum:"₹25,000 Cr"},
+    {name:"Nippon India Small Cap Fund",       code:"118778", low:110, high:170, aum:"₹62,000 Cr"},
+    {name:"HDFC Small Cap Fund",               code:"100024", low:100, high:155, aum:"₹32,000 Cr"},
+    {name:"SBI Small Cap Fund",                code:"125354", low:130, high:200, aum:"₹32,000 Cr"},
+    {name:"Axis Small Cap Fund",               code:"120573", low:68,  high:105, aum:"₹22,000 Cr"},
+    {name:"Invesco India Smallcap Fund",       code:"120590", low:22,  high:35,  aum:"₹5,500 Cr"},
+    {name:"Kotak Small Cap Fund",              code:"120200", low:180, high:275, aum:"₹16,000 Cr"},
+    {name:"DSP Small Cap Fund",                code:"100051", low:145, high:220, aum:"₹16,000 Cr"},
+    {name:"Franklin India Smaller Cos Fund",   code:"100037", low:110, high:168, aum:"₹14,000 Cr"},
+    {name:"Tata Small Cap Fund",               code:"145557", low:25,  high:38,  aum:"₹8,500 Cr"},
+    {name:"ICICI Pru Smallcap Fund",           code:"120596", low:65,  high:100, aum:"₹8,000 Cr"},
+    {name:"Canara Rob Small Cap Fund",         code:"119366", low:25,  high:38,  aum:"₹12,000 Cr"},
+    {name:"Edelweiss Small Cap Fund",          code:"147622", low:30,  high:46,  aum:"₹3,500 Cr"},
+    {name:"Union Small Cap Fund",              code:"135798", low:40,  high:62,  aum:"₹1,800 Cr"},
+    {name:"Aditya Birla SL Small Cap Fund",    code:"119518", low:50,  high:78,  aum:"₹5,200 Cr"},
+    {name:"Mirae Asset Small Cap Fund",        code:"152439", low:18,  high:28,  aum:"₹4,500 Cr"},
+    {name:"UTI Small Cap Fund",                code:"120719", low:22,  high:34,  aum:"₹5,800 Cr"},
+    {name:"Baroda BNP Small Cap Fund",         code:"119536", low:22,  high:34,  aum:"₹1,500 Cr"},
+    {name:"Sundaram Small Cap Fund",           code:"100455", low:200, high:305, aum:"₹3,200 Cr"},
+    {name:"PGIM India Small Cap Fund",         code:"120506", low:30,  high:46,  aum:"₹1,200 Cr"},
+  ],
+  elss:[
+    {name:"Motilal Oswal ELSS Tax Saver Fund", code:"150323", low:35,  high:55,  aum:"₹4,500 Cr"},
+    {name:"Quant ELSS Tax Saver Fund",         code:"120843", low:170, high:260, aum:"₹9,500 Cr"},
+    {name:"SBI Long Term Equity Fund",         code:"100102", low:290, high:440, aum:"₹26,000 Cr"},
+    {name:"HDFC ELSS Tax Saver Fund",          code:"100021", low:900, high:1380,aum:"₹16,000 Cr"},
+    {name:"Mirae Asset ELSS Tax Saver Fund",   code:"118834", low:35,  high:54,  aum:"₹25,000 Cr"},
+    {name:"Canara Rob ELSS Tax Saver Fund",    code:"119361", low:115, high:175, aum:"₹8,500 Cr"},
+    {name:"DSP ELSS Tax Saver Fund",           code:"119229", low:80,  high:122, aum:"₹16,000 Cr"},
+    {name:"Kotak ELSS Tax Saver Fund",         code:"120192", low:95,  high:145, aum:"₹6,500 Cr"},
+    {name:"Franklin India ELSS Tax Saver Fund",code:"100040", low:1100,high:1650,aum:"₹6,200 Cr"},
+    {name:"ICICI Pru ELSS Tax Saver Fund",     code:"120598", low:28,  high:44,  aum:"₹14,000 Cr"},
+    {name:"Aditya Birla SL ELSS Tax Relief",   code:"119510", low:46,  high:70,  aum:"₹16,000 Cr"},
+    {name:"Nippon India ELSS Tax Saver Fund",  code:"118789", low:28,  high:44,  aum:"₹15,000 Cr"},
+    {name:"Tata India Tax Savings Fund",       code:"100346", low:28,  high:44,  aum:"₹4,500 Cr"},
+    {name:"UTI Long Term Equity Fund",         code:"120715", low:140, high:215, aum:"₹3,500 Cr"},
+    {name:"Invesco India ELSS Tax Saver Fund", code:"120585", low:85,  high:130, aum:"₹2,200 Cr"},
+    {name:"Axis ELSS Tax Saver Fund",          code:"120566", low:32,  high:50,  aum:"₹36,000 Cr"},
+    {name:"PGIM India ELSS Tax Saver Fund",    code:"148465", low:20,  high:31,  aum:"₹700 Cr"},
+    {name:"Bandhan ELSS Tax Saver Fund",       code:"119566", low:35,  high:53,  aum:"₹6,000 Cr"},
+    {name:"Baroda BNP Paribas ELSS Fund",      code:"119530", low:35,  high:54,  aum:"₹1,800 Cr"},
+    {name:"Sundaram ELSS Tax Saver Fund",      code:"100453", low:100, high:155, aum:"₹1,200 Cr"},
+  ]
+};
+
+let navMap = {};
+let activeTab = 'large';
+
+// ─── SIGNAL LOGIC ─────────────────────────────────────────────
+function getSignal(nav, low, high) {
+  if (!nav || isNaN(nav)) return { sig:'HOLD', pct:50, reason:'NAV data unavailable' };
+  const range = high - low;
+  const pos = Math.max(0, Math.min(1, (nav - low) / range)); // 0=low,1=high
+  const pct = Math.round(pos * 100);
+
+  if (pos <= 0.30) return { sig:'BUY',  pct, reason:`NAV near 52W low — good entry point` };
+  if (pos >= 0.75) return { sig:'SELL', pct, reason:`NAV near 52W high — consider waiting` };
+  return { sig:'HOLD', pct, reason:`NAV in mid-range — continue SIP` };
+}
+
+function getSIPSignal(sig, pct) {
+  if (sig === 'BUY')  return { text:`Great time to increase SIP amount or add lumpsum — fund is on a dip (${pct}% of 52W range).`, action:'Top-up SIP' };
+  if (sig === 'SELL') return { text:`Avoid new lumpsum investment now. Continue existing SIP only — NAV near peak (${pct}% of 52W range).`, action:'SIP Only' };
+  return { text:`Continue regular SIP. Mid-range NAV — neither aggressive buy nor exit zone.`, action:'Continue SIP' };
+}
+
+// ─── RENDER ───────────────────────────────────────────────────
+function renderSection(cat) {
+  const container = document.getElementById('list-' + cat);
+  container.innerHTML = '';
+  let buys=0, holds=0, sells=0;
+
+  FUNDS[cat].forEach((f, i) => {
+    const info = navMap[f.code];
+    const navVal = info ? parseFloat(info.nav) : null;
+    const { sig, pct, reason } = getSignal(navVal, f.low, f.high);
+    const sip = getSIPSignal(sig, pct);
+
+    if (sig==='BUY') buys++;
+    else if (sig==='SELL') sells++;
+    else holds++;
+
+    const navDisplay = navVal ? '₹' + navVal.toFixed(2) : '—';
+    const navDate = info ? info.date : '';
+
+    container.innerHTML += `
+    <div class="sig-card ${sig.toLowerCase()}-card">
+      <div class="sig-top">
+        <span class="sig-rank">#${i+1}</span>
+        <span class="sig-name">${f.name}</span>
+        <span class="signal-badge ${sig}">${sig==='SELL'?'WAIT':sig}</span>
+      </div>
+      <div class="sig-nav-row">
+        <div>
+          <div class="nav-display">${navDisplay}</div>
+          <div class="nav-sub">${navDate ? 'NAV date: '+navDate : 'Estimated'} · AUM: ${f.aum}</div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:var(--muted);max-width:140px;">
+          ${reason}
+        </div>
+      </div>
+      <div class="range-section">
+        <div class="range-label">
+          <span>52W Low ₹${f.low}</span>
+          <span style="color:${sig==='BUY'?'var(--buy)':sig==='SELL'?'var(--sell)':'var(--hold)'}">Position: ${pct}%</span>
+          <span>52W High ₹${f.high}</span>
+        </div>
+        <div class="range-bar">
+          <div class="range-fill" style="width:100%"></div>
+          <div class="range-pointer" style="left:${pct}%"></div>
+        </div>
+      </div>
+      <div class="sip-row">
+        <span class="sip-icon">📅</span>
+        <span class="sip-text">${sip.text}</span>
+        <span class="sip-action">${sip.action}</span>
+      </div>
+    </div>`;
+  });
+
+  // update summary counts for active tab
+  if (cat === activeTab) {
+    document.getElementById('buyCount').textContent = buys;
+    document.getElementById('holdCount').textContent = holds;
+    document.getElementById('sellCount').textContent = sells;
+  }
+}
+
+function renderAll() {
+  Object.keys(FUNDS).forEach(cat => renderSection(cat));
+  // update summary for active tab
+  updateSummary(activeTab);
+}
+
+function updateSummary(cat) {
+  let buys=0, holds=0, sells=0;
+  FUNDS[cat].forEach(f => {
+    const info = navMap[f.code];
+    const navVal = info ? parseFloat(info.nav) : null;
+    const { sig } = getSignal(navVal, f.low, f.high);
+    if (sig==='BUY') buys++;
+    else if (sig==='SELL') sells++;
+    else holds++;
+  });
+  document.getElementById('buyCount').textContent = buys;
+  document.getElementById('holdCount').textContent = holds;
+  document.getElementById('sellCount').textContent = sells;
+}
+
+// ─── TABS ─────────────────────────────────────────────────────
+function showTab(tab, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-'+tab).classList.add('active');
+  el.classList.add('active');
+  activeTab = tab;
+  updateSummary(tab);
+}
+
+// ─── FETCH NAV ────────────────────────────────────────────────
+async function loadAndRender() {
+  const btn = document.getElementById('refreshBtn');
+  const pulse = document.getElementById('pulse');
+  const statusTxt = document.getElementById('statusTxt');
+  const errorNote = document.getElementById('errorNote');
+
+  btn.classList.add('spin');
+  pulse.classList.add('active');
+  statusTxt.textContent = 'Fetching live NAV from AMFI...';
+  errorNote.style.display = 'none';
+
+  // Show loading shimmer
+  Object.keys(FUNDS).forEach(cat => {
+    const c = document.getElementById('list-'+cat);
+    c.innerHTML = FUNDS[cat].map(()=>'<div class="shimmer"></div>').join('');
+  });
+
+  try {
+    const AMFI_URL = 'https://www.amfiindia.com/spages/NAVAll.txt';
+    const proxies = [
+      'https://corsproxy.io/?' + encodeURIComponent(AMFI_URL),
+      'https://api.allorigins.win/raw?url=' + encodeURIComponent(AMFI_URL),
+      'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(AMFI_URL),
+    ];
+    let text = null;
+    for (const url of proxies) {
+      try {
+        const res = await fetch(url, {signal: AbortSignal.timeout(8000)});
+        if (res.ok) { text = await res.text(); break; }
+      } catch(e) { continue; }
+    }
+    if (!text) throw new Error('All proxies failed');
+    navMap = {};
+    text.split('\n').forEach(line => {
+      const p = line.split(';');
+      if (p.length >= 6) {
+        const code = p[0].trim(), nav = p[4].trim(), date = p[5].trim();
+        if (code && nav && !isNaN(parseFloat(nav))) navMap[code] = { nav, date };
+      }
+    });
+    const now = new Date();
+    statusTxt.textContent = `Live NAV loaded · ${now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})} IST`;
+  } catch(e) {
+    statusTxt.textContent = 'Live fetch failed — using estimated ranges';
+    errorNote.style.display = 'block';
+    pulse.style.background = 'var(--hold)';
+  }
+
+  renderAll();
+  btn.classList.remove('spin');
+  pulse.classList.remove('active');
+  pulse.style.background = 'var(--buy)';
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────
+loadAndRender();
+</script>
+</body>
+</html>
