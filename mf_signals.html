@@ -494,7 +494,7 @@ async function loadAndRender() {
       }
     });
     const now = new Date();
-    statusTxt.textContent = `Live NAV loaded · ${now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})} IST`;
+    statusTxt.textContent = `NAV loaded · ${window._navUpdated || now.toLocaleString('en-IN')}`;
   } catch(e) {
     statusTxt.textContent = 'Live fetch failed — using estimated ranges';
     errorNote.style.display = 'block';
