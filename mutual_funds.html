@@ -404,7 +404,7 @@ async function loadAllNAV() {
     });
     renderAll();
     const now = new Date();
-    statusText.textContent = `Live NAV loaded · ${now.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'})} IST`;
+    statusText.textContent = `NAV loaded · ${window._navUpdated || now.toLocaleString('en-IN')}`;
     dot.classList.remove('loading');
   } catch(e) {
     statusText.textContent = 'Could not fetch live NAV. Showing static data.';
