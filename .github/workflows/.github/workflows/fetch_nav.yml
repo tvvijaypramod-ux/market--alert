@@ -2,8 +2,11 @@ name: Fetch MF NAV Daily
 
 on:
   schedule:
-    - cron: '30 15 * * 1-5'  # 9:00 PM IST (3:30 PM UTC), weekdays only
-  workflow_dispatch:           # Allow manual trigger anytime
+    - cron: '30 15 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   fetch-nav:
@@ -11,6 +14,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fetch NAV from AMFI and save JSON
         run: |
@@ -19,29 +24,23 @@ jobs:
           import json
           from datetime import datetime
 
-          # Fund codes we need - all 5 categories
           CODES = [
-            # Large Cap
             "118989","152441","120594","119568","120586",
             "119255","145552","135300","119533","100350",
-            # Flexi Cap
             "122639","100033","148153","119546","135798",
             "125497","120255","100016","120716","119364",
             "120503","119230","120600","118988","145551",
             "145553","120568","119532","100476","100040",
-            # Mid Cap
             "135800","148151","118954","100006","100258",
             "120187","120504","145556","120588","120573",
             "100050","100042","120592","100341","120718",
             "119508","119365","100456","119534",
-            # Small Cap
             "120843","118778","100024","125354",
             "120590","120200","100051","100037","145557",
             "120596","119366","147622","119518","152439",
             "120719","119536","100455","120506",
-            # ELSS
             "150323","100102","100021","118834","119361",
-            "119229","120192","100040","120598","119510",
+            "119229","120192","120598","119510",
             "118789","100346","120715","120585","120566",
             "148465","119566","119530","100453",
           ]
@@ -73,8 +72,7 @@ jobs:
           with open("nav_data.json", "w") as f:
               json.dump(output, f, indent=2)
 
-          print(f"âœ… Saved NAV for {len(nav_data)} funds")
-          print(f"Updated: {output['updated']}")
+          print(f"Saved NAV for {len(nav_data)} funds")
           EOF
 
       - name: Commit and push NAV data
@@ -82,6 +80,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add nav_data.json
-          git diff --staged --quiet || git commit -m "ðŸ“ˆ Auto-update MF NAV data - $(date '+%Y-%m-%d %H:%M IST')"
+          git diff --staged --quiet || git commit -m "Auto-update MF NAV - $(date '+%Y-%m-%d')"
           git push
-          
