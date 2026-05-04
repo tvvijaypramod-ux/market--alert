@@ -1,5 +1,5 @@
 {
-  "updated": "2026-05-01 16:30 UTC",
+  "updated": "2026-05-04 17:10 UTC",
   "source": "AMFI India",
   "data": {
     "120255": {
@@ -38,18 +38,18 @@
       "name": "ICICI Prudential Gilt Fund - Direct Plan - Growth"
     },
     "119568": {
-      "nav": "448.07",
-      "date": "30-Apr-2026",
+      "nav": "448.295",
+      "date": "03-May-2026",
       "name": "Aditya Birla Sun Life Liquid Fund - Growth - Direct Plan"
     },
     "100051": {
-      "nav": "100.2917",
-      "date": "30-Apr-2026",
+      "nav": "100.341",
+      "date": "03-May-2026",
       "name": "Aditya Birla Sun Life Liquid Fund -weekly IDCW"
     },
     "100042": {
-      "nav": "717.6617",
-      "date": "30-Apr-2026",
+      "nav": "718.014",
+      "date": "03-May-2026",
       "name": "Aditya Birla Sun Life Liquid Fund-Retail (Growth)"
     },
     "120187": {
@@ -118,8 +118,8 @@
       "name": "quant Flexi Cap Fund - Growth Option-Direct Plan"
     },
     "100476": {
-      "nav": "218.35",
-      "date": "30-Apr-2026",
+      "nav": "220.04",
+      "date": "04-May-2026",
       "name": "Taurus Flexi Cap Fund - Regular Plan - Growth"
     },
     "100033": {
@@ -138,8 +138,8 @@
       "name": "Mirae Asset Large & Midcap Fund - Direct Plan - Growth"
     },
     "119566": {
-      "nav": "94.7373",
-      "date": "30-Apr-2026",
+      "nav": "95.1190",
+      "date": "04-May-2026",
       "name": "Sundaram Large and Midcap Fund Direct Plan - Growth"
     },
     "120585": {
@@ -178,13 +178,13 @@
       "name": "Aditya Birla Sun Life International Equity Fund - Plan B - Growth - Direct Plan"
     },
     "119364": {
-      "nav": "74.39",
-      "date": "30-Apr-2026",
+      "nav": "75.33",
+      "date": "04-May-2026",
       "name": "BANK OF INDIA Manufacturing & Infrastructure Fund-Direct Plan-Growth"
     },
     "119365": {
-      "nav": "73.12",
-      "date": "30-Apr-2026",
+      "nav": "74.05",
+      "date": "04-May-2026",
       "name": "BANK OF INDIA Manufacturing & Infrastructure Fund-Direct Plan-Quarterly IDCW"
     },
     "152439": {
@@ -223,13 +223,13 @@
       "name": "Nippon India Small Cap Fund - Direct Plan Growth Plan - Growth Option"
     },
     "125497": {
-      "nav": "193.4131",
-      "date": "30-Apr-2026",
+      "nav": "195.4469",
+      "date": "04-May-2026",
       "name": "SBI Small Cap Fund - Direct Plan - Growth"
     },
     "152441": {
-      "nav": "13.3951",
-      "date": "30-Apr-2026",
+      "nav": "13.4428",
+      "date": "04-May-2026",
       "name": "Mahindra Manulife Multi Asset Allocation Fund- Regular Plan - Growth"
     },
     "145552": {
