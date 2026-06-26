@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-25 17:28 UTC",
+  "updated": "2026-06-26 17:14 UTC",
   "source": "AMFI India",
   "data": {
     "120255": {
@@ -46,11 +46,6 @@
       "nav": "100.3324",
       "date": "25-Jun-2026",
       "name": "Aditya Birla Sun Life Liquid Fund -weekly IDCW"
-    },
-    "100042": {
-      "nav": "724.1661",
-      "date": "19-Jun-2026",
-      "name": "Aditya Birla Sun Life Liquid Fund-Retail (Growth)"
     },
     "120187": {
       "nav": "106.7325",
@@ -108,8 +103,8 @@
       "name": "HDFC Flexi Cap Fund - IDCW Option - Direct Plan"
     },
     "122639": {
-      "nav": "89.9330",
-      "date": "24-Jun-2026",
+      "nav": "89.7127",
+      "date": "25-Jun-2026",
       "name": "Parag Parikh Flexi Cap Fund - Direct Plan - Growth"
     },
     "120843": {
@@ -188,8 +183,8 @@
       "name": "BANK OF INDIA Manufacturing & Infrastructure Fund-Direct Plan-Quarterly IDCW"
     },
     "152439": {
-      "nav": "11.5948",
-      "date": "24-Jun-2026",
+      "nav": "11.5273",
+      "date": "25-Jun-2026",
       "name": "Edelweiss Technology Fund - Regular Plan - Growth"
     },
     "120588": {
@@ -198,8 +193,8 @@
       "name": "ICICI Prudential FMCG Fund - Direct Plan -  IDCW"
     },
     "120594": {
-      "nav": "186.85",
-      "date": "24-Jun-2026",
+      "nav": "184.64",
+      "date": "25-Jun-2026",
       "name": "ICICI Prudential Technology Fund - Direct Plan -  Growth"
     },
     "135798": {
@@ -228,8 +223,8 @@
       "name": "SBI Small Cap Fund - Direct Plan - Growth"
     },
     "152441": {
-      "nav": "13.6204",
-      "date": "24-Jun-2026",
+      "nav": "13.5982",
+      "date": "25-Jun-2026",
       "name": "Mahindra Manulife Multi Asset Allocation Fund- Regular Plan - Growth"
     },
     "145552": {
