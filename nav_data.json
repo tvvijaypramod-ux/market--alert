@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-31 17:01 UTC",
+  "updated": "2026-08-03 17:23 UTC",
   "source": "AMFI India",
   "data": {
     "120255": {
@@ -8,13 +8,13 @@
       "name": "ICICI Prudential Banking and PSU Debt Fund - Direct Plan -  Weekly IDCW"
     },
     "119533": {
-      "nav": "121.6486",
-      "date": "30-Jul-2026",
+      "nav": "121.6885",
+      "date": "31-Jul-2026",
       "name": "Aditya Birla Sun Life Corporate Bond Fund - Growth - Direct Plan"
     },
     "119532": {
-      "nav": "12.8588",
-      "date": "30-Jul-2026",
+      "nav": "12.8630",
+      "date": "31-Jul-2026",
       "name": "Aditya Birla Sun Life Corporate Bond Fund -DIRECT - MONTHLY IDCW"
     },
     "148151": {
@@ -38,13 +38,13 @@
       "name": "ICICI Prudential Gilt Fund - Direct Plan - Growth"
     },
     "119568": {
-      "nav": "455.5363",
-      "date": "30-Jul-2026",
+      "nav": "455.8124",
+      "date": "02-Aug-2026",
       "name": "Aditya Birla Sun Life Liquid Fund - Growth - Direct Plan"
     },
     "100051": {
-      "nav": "100.3194",
-      "date": "30-Jul-2026",
+      "nav": "100.2590",
+      "date": "02-Aug-2026",
       "name": "Aditya Birla Sun Life Liquid Fund -weekly IDCW"
     },
     "120187": {
@@ -53,18 +53,18 @@
       "name": "ICICI Prudential Liquid Fund - Direct Plan -  Half Yearly IDCW"
     },
     "100037": {
-      "nav": "13.0837",
-      "date": "30-Jul-2026",
+      "nav": "13.0925",
+      "date": "31-Jul-2026",
       "name": "Aditya Birla Sun Life Income Fund - Regular - Quarterly IDCW"
     },
     "120718": {
-      "nav": "35.9388",
-      "date": "30-Jul-2026",
+      "nav": "35.9581",
+      "date": "31-Jul-2026",
       "name": "UTI Short Duration Fund - Direct Plan - Growth Option"
     },
     "120719": {
-      "nav": "20.3207",
-      "date": "30-Jul-2026",
+      "nav": "20.3317",
+      "date": "31-Jul-2026",
       "name": "UTI Short Duration Fund - Direct Plan - Quarterly IDCW"
     },
     "120503": {
@@ -78,18 +78,18 @@
       "name": "ICICI Prudential ELSS Tax Saver Fund - Direct Plan - Growth"
     },
     "120715": {
-      "nav": "229.1695",
-      "date": "30-Jul-2026",
+      "nav": "230.3628",
+      "date": "31-Jul-2026",
       "name": "UTI ELSS Tax Saver Fund - Direct Plan - Growth Option"
     },
     "118954": {
-      "nav": "91.604",
-      "date": "30-Jul-2026",
+      "nav": "91.671",
+      "date": "31-Jul-2026",
       "name": "HDFC Flexi Cap Fund - IDCW Option - Direct Plan"
     },
     "122639": {
-      "nav": "91.3427",
-      "date": "30-Jul-2026",
+      "nav": "92.0527",
+      "date": "31-Jul-2026",
       "name": "Parag Parikh Flexi Cap Fund - Direct Plan - Growth"
     },
     "120843": {
@@ -98,13 +98,13 @@
       "name": "quant Flexi Cap Fund - Growth Option-Direct Plan"
     },
     "100476": {
-      "nav": "236.01",
-      "date": "31-Jul-2026",
+      "nav": "239.38",
+      "date": "03-Aug-2026",
       "name": "Taurus Flexi Cap Fund - Regular Plan - Growth"
     },
     "100033": {
-      "nav": "943.25",
-      "date": "30-Jul-2026",
+      "nav": "946.61",
+      "date": "31-Jul-2026",
       "name": "Aditya Birla Sun Life Large & Mid Cap Fund - Regular Growth"
     },
     "120596": {
@@ -118,8 +118,8 @@
       "name": "Mirae Asset Large & Midcap Fund - Direct Plan - Growth"
     },
     "119566": {
-      "nav": "103.5931",
-      "date": "30-Jul-2026",
+      "nav": "104.4668",
+      "date": "31-Jul-2026",
       "name": "Sundaram Large and Midcap Fund Direct Plan - Growth"
     },
     "120585": {
@@ -138,13 +138,13 @@
       "name": "Axis Midcap Fund - Direct Plan - IDCW"
     },
     "118989": {
-      "nav": "232.749",
-      "date": "30-Jul-2026",
+      "nav": "233.488",
+      "date": "31-Jul-2026",
       "name": "HDFC Mid Cap Fund - Growth Option - Direct Plan"
     },
     "118988": {
-      "nav": "82.645",
-      "date": "30-Jul-2026",
+      "nav": "82.907",
+      "date": "31-Jul-2026",
       "name": "HDFC Mid Cap Fund - IDCW Option - Direct Plan"
     },
     "120598": {
@@ -168,8 +168,8 @@
       "name": "BANK OF INDIA Manufacturing & Infrastructure Fund-Direct Plan-Quarterly IDCW"
     },
     "152439": {
-      "nav": "12.5055",
-      "date": "30-Jul-2026",
+      "nav": "12.4351",
+      "date": "31-Jul-2026",
       "name": "Edelweiss Technology Fund - Regular Plan - Growth"
     },
     "120588": {
@@ -178,18 +178,18 @@
       "name": "ICICI Prudential FMCG Fund - Direct Plan -  IDCW"
     },
     "120594": {
-      "nav": "205.28",
-      "date": "30-Jul-2026",
+      "nav": "204.28",
+      "date": "31-Jul-2026",
       "name": "ICICI Prudential Technology Fund - Direct Plan -  Growth"
     },
     "135798": {
-      "nav": "48.3335",
-      "date": "30-Jul-2026",
+      "nav": "47.8381",
+      "date": "31-Jul-2026",
       "name": "TATA Digital India Fund Direct Plan - Reinvestment of Income Distribution cum capital withdrawal option"
     },
     "135800": {
-      "nav": "50.0098",
-      "date": "30-Jul-2026",
+      "nav": "49.4972",
+      "date": "31-Jul-2026",
       "name": "Tata Digital India Fund-Direct Plan-Growth"
     },
     "125354": {
@@ -203,8 +203,8 @@
       "name": "Nippon India Small Cap Fund - Direct Plan Growth Plan - Growth Option"
     },
     "125497": {
-      "nav": "204.8096",
-      "date": "30-Jul-2026",
+      "nav": "204.7896",
+      "date": "31-Jul-2026",
       "name": "SBI Small Cap Fund - Direct Plan - Growth"
     },
     "152441": {
@@ -214,42 +214,42 @@
     },
     "120506": {
       "nav": "1012.2021",
-      "date": "30-Jul-2026",
+      "date": "31-Jul-2026",
       "name": "Invesco India Money Market Fund - Direct Plan - Daily IDCW (Reinvestment)"
     },
     "120568": {
-      "nav": "1206.0965",
-      "date": "30-Jul-2026",
+      "nav": "1206.4488",
+      "date": "31-Jul-2026",
       "name": "Invesco India Low Duration Fund - Direct Plan - Weekly IDCW (Payout / Reinvestment)"
     },
     "120566": {
-      "nav": "1018.9018",
-      "date": "30-Jul-2026",
+      "nav": "1018.9655",
+      "date": "31-Jul-2026",
       "name": "Invesco India Low Duration Fund - Direct Plan -Daily IDCW (Reinvestment)"
     },
     "145552": {
-      "nav": "65.8777",
-      "date": "30-Jul-2026",
+      "nav": "64.3976",
+      "date": "31-Jul-2026",
       "name": "Motilal Oswal Nasdaq 100 Fund of Fund- Direct Plan Growth"
     },
     "145551": {
-      "nav": "63.9600",
-      "date": "30-Jul-2026",
+      "nav": "62.5225",
+      "date": "31-Jul-2026",
       "name": "Motilal Oswal Nasdaq 100 Fund of Fund- Regular Plan Growth"
     },
     "147622": {
-      "nav": "41.7863",
-      "date": "30-Jul-2026",
+      "nav": "41.9836",
+      "date": "31-Jul-2026",
       "name": "Motilal Oswal Nifty Midcap 150 Index Fund - Direct Plan"
     },
     "120716": {
-      "nav": "171.0372",
-      "date": "30-Jul-2026",
+      "nav": "171.5398",
+      "date": "31-Jul-2026",
       "name": "UTI Nifty 50 Index Fund - Growth Option- Direct"
     },
     "119255": {
-      "nav": "81.8191",
-      "date": "30-Jul-2026",
+      "nav": "82.1115",
+      "date": "31-Jul-2026",
       "name": "Tata Retirement Savings Fund- Moderate Plan -Direct Plan-Growth Option"
     },
     "145553": {
