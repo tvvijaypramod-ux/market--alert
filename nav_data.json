@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-19 15:55 UTC",
+  "updated": "2026-08-20 15:57 UTC",
   "source": "AMFI India",
   "data": {
     "120255": {
@@ -42,6 +42,16 @@
       "date": "Quarterly IDCW",
       "name": "Aditya Birla Sun Life Income Fund"
     },
+    "120718": {
+      "nav": "Direct Plan",
+      "date": "Growth",
+      "name": "UTI Short Duration Fund"
+    },
+    "120719": {
+      "nav": "Direct Plan",
+      "date": "Quarterly IDCW",
+      "name": "UTI Short Duration Fund"
+    },
     "120503": {
       "nav": "Direct Plan",
       "date": "Growth Option",
@@ -51,6 +61,11 @@
       "nav": "Direct Plan",
       "date": "Growth",
       "name": "ICICI Prudential ELSS Tax Saver Fund"
+    },
+    "120715": {
+      "nav": "Direct Plan",
+      "date": "Growth",
+      "name": "UTI ELSS Tax Saver Fund"
     },
     "118954": {
       "nav": "Direct Plan",
@@ -66,6 +81,11 @@
       "nav": "Direct Plan",
       "date": "Growth Option",
       "name": "Quant Flexi Cap Fund"
+    },
+    "100476": {
+      "nav": "Regular Plan",
+      "date": "Growth",
+      "name": "Taurus Flexi Cap Fund"
     },
     "100033": {
       "nav": "Regular Plan",
@@ -181,6 +201,11 @@
       "nav": "Direct Plan",
       "date": "Daily IDCW",
       "name": "Invesco India Low Duration Fund"
+    },
+    "120716": {
+      "nav": "Direct Plan",
+      "date": "Growth",
+      "name": "UTI Nifty 50 Index Fund"
     },
     "119255": {
       "nav": "Direct Plan",
