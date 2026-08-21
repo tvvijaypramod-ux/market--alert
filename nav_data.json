@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20 15:57 UTC",
+  "updated": "2026-08-21 15:57 UTC",
   "source": "AMFI India",
   "data": {
     "120255": {
@@ -176,6 +176,11 @@
       "nav": "Direct Plan",
       "date": "Growth Option",
       "name": "Nippon India Small Cap Fund"
+    },
+    "125497": {
+      "nav": "Direct Plan",
+      "date": "Growth",
+      "name": "SBI SMALL CAP FUND"
     },
     "118834": {
       "nav": "Direct Plan",
