@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24 16:02 UTC",
+  "updated": "2026-08-25 16:06 UTC",
   "source": "AMFI India",
   "data": {
     "120255": {
@@ -206,6 +206,11 @@
       "nav": "Direct Plan",
       "date": "Daily IDCW",
       "name": "Invesco India Low Duration Fund"
+    },
+    "147622": {
+      "nav": "Direct Plan",
+      "date": "Growth",
+      "name": "Motilal Oswal Nifty Midcap 150 Index Fund"
     },
     "120716": {
       "nav": "Direct Plan",
