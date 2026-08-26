@@ -1,12 +1,7 @@
 {
-  "updated": "2026-08-25 16:06 UTC",
+  "updated": "2026-08-26 16:35 UTC",
   "source": "AMFI India",
   "data": {
-    "120255": {
-      "nav": "Direct Plan",
-      "date": "Weekly IDCW",
-      "name": "ICICI Prudential Banking & PSU Debt Fund"
-    },
     "119533": {
       "nav": "Direct Plan",
       "date": "GROWTH",
@@ -16,11 +11,6 @@
       "nav": "Direct Plan",
       "date": "Monthly IDCW Re-investment",
       "name": "Aditya Birla Sun Life Corporate Bond Fund"
-    },
-    "120600": {
-      "nav": "Direct Plan",
-      "date": "IDCW",
-      "name": "ICICI Prudential All Seasons Bond Fund"
     },
     "120590": {
       "nav": "Direct Plan",
@@ -41,26 +31,6 @@
       "nav": "Regular Plan",
       "date": "Quarterly IDCW",
       "name": "Aditya Birla Sun Life Income Fund"
-    },
-    "120718": {
-      "nav": "Direct Plan",
-      "date": "Growth",
-      "name": "UTI Short Duration Fund"
-    },
-    "120719": {
-      "nav": "Direct Plan",
-      "date": "Quarterly IDCW",
-      "name": "UTI Short Duration Fund"
-    },
-    "120503": {
-      "nav": "Direct Plan",
-      "date": "Growth Option",
-      "name": "Axis ELSS Tax Saver Fund"
-    },
-    "120592": {
-      "nav": "Direct Plan",
-      "date": "Growth",
-      "name": "ICICI Prudential ELSS Tax Saver Fund"
     },
     "120715": {
       "nav": "Direct Plan",
@@ -127,11 +97,6 @@
       "date": "IDCW Option",
       "name": "HDFC Mid Cap Fund"
     },
-    "120598": {
-      "nav": "Direct Plan",
-      "date": "IDCW",
-      "name": "ICICI Prudential Multicap Fund"
-    },
     "119364": {
       "nav": "Direct Plan",
       "date": "Growth",
@@ -182,30 +147,65 @@
       "date": "Growth",
       "name": "SBI SMALL CAP FUND"
     },
+    "120503": {
+      "nav": "Direct Plan",
+      "date": "Growth Option",
+      "name": "Axis ELSS- Tax Saver Fund"
+    },
+    "120592": {
+      "nav": "Direct Plan",
+      "date": "Growth",
+      "name": "ICICI Prudential ELSS - Tax Saver Fund"
+    },
     "118834": {
       "nav": "Direct Plan",
       "date": "Growth",
       "name": "Mirae Asset Large & Midcap Fund"
+    },
+    "120598": {
+      "nav": "Direct Plan",
+      "date": "IDCW",
+      "name": "ICICI Prudential Multi Cap Fund"
     },
     "152441": {
       "nav": "Regular Plan",
       "date": "Growth",
       "name": "Mahindra Manulife Multi Asset Allocation Fund"
     },
+    "120255": {
+      "nav": "Direct Plan",
+      "date": "Weekly IDCW",
+      "name": "ICICI Prudential Banking and PSU Debt Fund"
+    },
+    "120600": {
+      "nav": "Direct Plan",
+      "date": "IDCW",
+      "name": "ICICI Prudential Dynamic Term Fund"
+    },
     "120506": {
       "nav": "Direct Plan",
       "date": "Daily IDCW",
       "name": "Invesco India Money Market Fund"
     },
+    "120718": {
+      "nav": "Direct Plan",
+      "date": "Growth",
+      "name": "UTI Short Term Fund"
+    },
+    "120719": {
+      "nav": "Direct Plan",
+      "date": "Quarterly IDCW",
+      "name": "UTI Short Term Fund"
+    },
     "120568": {
       "nav": "Direct Plan",
       "date": "Weekly IDCW",
-      "name": "Invesco India Low Duration Fund"
+      "name": "Invesco India Ultra Short to Short Term Fund"
     },
     "120566": {
       "nav": "Direct Plan",
       "date": "Daily IDCW",
-      "name": "Invesco India Low Duration Fund"
+      "name": "Invesco India Ultra Short to Short Term Fund"
     },
     "147622": {
       "nav": "Direct Plan",
