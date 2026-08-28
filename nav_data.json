@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-26 16:35 UTC",
+  "updated": "2026-08-28 00:29 UTC",
   "source": "AMFI India",
   "data": {
     "119533": {
@@ -132,11 +132,6 @@
       "date": "Growth Option",
       "name": "Tata Digital India Fund"
     },
-    "125354": {
-      "nav": "Direct Plan",
-      "date": "Growth Option",
-      "name": "Axis Small Cap Fund"
-    },
     "118778": {
       "nav": "Direct Plan",
       "date": "Growth Option",
@@ -166,6 +161,11 @@
       "nav": "Direct Plan",
       "date": "IDCW",
       "name": "ICICI Prudential Multi Cap Fund"
+    },
+    "125354": {
+      "nav": "Direct Plan",
+      "date": "Growth Option",
+      "name": "Axis Small Cap Fund"
     },
     "152441": {
       "nav": "Regular Plan",
