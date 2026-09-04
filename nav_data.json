@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-03 18:48 UTC",
+  "updated": "2026-09-04 18:31 UTC",
   "source": "AMFI India",
   "data": {
     "119533": {
@@ -187,14 +187,14 @@
       "date": "Daily IDCW",
       "name": "Invesco India Money Market Fund"
     },
+    "120719": {
+      "nav": "Direct Plan",
+      "date": "Discontinued Quarterly IDCW",
+      "name": "UTI Short Term Fund"
+    },
     "120718": {
       "nav": "Direct Plan",
       "date": "Growth",
-      "name": "UTI Short Term Fund"
-    },
-    "120719": {
-      "nav": "Direct Plan",
-      "date": "Quarterly IDCW",
       "name": "UTI Short Term Fund"
     },
     "120568": {
