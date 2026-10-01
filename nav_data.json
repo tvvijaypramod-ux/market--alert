@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-30 20:11 UTC",
+  "updated": "2026-10-01 20:24 UTC",
   "source": "AMFI India",
   "data": {
     "119533": {
@@ -16,16 +16,6 @@
       "nav": "Direct Plan",
       "date": "Growth",
       "name": "ICICI Prudential Gilt Fund"
-    },
-    "119568": {
-      "nav": "Direct Plan",
-      "date": "GROWTH",
-      "name": "Aditya Birla Sun Life Liquid Fund"
-    },
-    "100051": {
-      "nav": "Regular Plan",
-      "date": "Weekly IDCW",
-      "name": "Aditya Birla Sun Life Liquid Fund"
     },
     "120715": {
       "nav": "Direct Plan",
@@ -176,6 +166,16 @@
       "nav": "Direct Plan",
       "date": "IDCW",
       "name": "ICICI Prudential Dynamic Term Fund"
+    },
+    "119568": {
+      "nav": "Direct Plan",
+      "date": "GROWTH",
+      "name": "Aditya Birla Sun Life Liquid Fund"
+    },
+    "100051": {
+      "nav": "Regular Plan",
+      "date": "Weekly IDCW",
+      "name": "Aditya Birla Sun Life Liquid Fund"
     },
     "100037": {
       "nav": "Regular Plan",
